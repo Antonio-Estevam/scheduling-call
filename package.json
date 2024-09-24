@@ -6,19 +6,32 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fix": "next lint --fix"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
+    "@ignite-ui/react": "^2.2.4",
+    "@prisma/client": "^5.19.1",
+    "axios": "^1.7.7",
+    "next": "14.2.12",
+    "next-auth": "^4.24.7",
+    "nookies": "^2.5.2",
+    "phosphor-react": "^1.4.1",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.12"
+    "react-hook-form": "^7.53.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@rocketseat/eslint-config": "^2.2.2",
+    "@types/cookie": "^0.6.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.12"
+    "eslint-config-next": "14.2.12",
+    "prisma": "^5.19.1",
+    "typescript": "^5"
   }
 }
