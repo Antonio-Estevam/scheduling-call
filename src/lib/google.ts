@@ -33,7 +33,7 @@ export async function getGoogleOAuthToken(userId: string) {
       access_token,
       expiry_date,
       id_token,
-      refresh_token,      
+      refresh_token,
       scope,
       token_type,
     } = credentials
@@ -54,9 +54,7 @@ export async function getGoogleOAuthToken(userId: string) {
 
     auth.setCredentials({
       access_token,
-
       refresh_token,
-
       expiry_date,
     })
   }
