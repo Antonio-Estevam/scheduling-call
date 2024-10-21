@@ -31,7 +31,7 @@ export default async function handle(
   const isPastDate = refernceDate.endOf('day').isBefore(new Date())
 
   if (isPastDate) {
-    return res.json({ possibleTimes: [], availabilityTime: [] })
+    return res.json({ possibleTimes: [], availabilityTimes: [] })
   }
 
   const userAvailability = await prisma.userTimeInterval.findFirst({
@@ -42,7 +42,7 @@ export default async function handle(
   })
 
   if (!userAvailability) {
-    return res.json({ possibleTimes: [], availabilityTime: [] })
+    return res.json({ possibleTimes: [], availabilityTimes: [] })
   }
 
   // eslint-disable-next-line camelcase
@@ -72,17 +72,18 @@ export default async function handle(
     },
   })
 
-  const availabilityTime = possibleTimes.filter((time) => {
+  const availabilityTimes = possibleTimes.filter((time) => {
     const isTimeBlocked = blockedTimes.some(
       (blockedTimes) => blockedTimes.date.getHours() === time,
     )
 
     const isTimeInPast = refernceDate.set('hour', time).isBefore(new Date())
 
-    return !isTimeBlocked && isTimeInPast
+    return !isTimeBlocked && !isTimeInPast
   })
+
   return res.json({
     possibleTimes,
-    availabilityTime,
+    availabilityTimes,
   })
 }
