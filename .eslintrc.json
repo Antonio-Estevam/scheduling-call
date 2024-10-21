@@ -3,5 +3,5 @@
     "@rocketseat/eslint-config/react",
     "next/core-web-vitals", 
     "next/typescript"
-  ]
+  ], "@typescript-eslint/camelcase": ["off"]
 }

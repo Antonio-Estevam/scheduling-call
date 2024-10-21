@@ -32,11 +32,7 @@ interface CalendarProps {
   onDateSelected: (date: Date) => void
 }
 
-export default function Calendar({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  selectedDate,
-  onDateSelected,
-}: CalendarProps) {
+export default function Calendar({ onDateSelected }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(() => {
     return dayjs().set('date', 1)
   })
