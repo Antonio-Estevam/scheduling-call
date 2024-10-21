@@ -37,5 +37,8 @@
     "eslint-config-next": "14.2.12",
     "prisma": "^5.19.1",
     "typescript": "^5"
+  },
+  "resolutions": {
+    "react-countup/countup.js": "2.5.0"
   }
 }
