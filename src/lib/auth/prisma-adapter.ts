@@ -3,16 +3,32 @@ import { Adapter } from 'next-auth/adapters'
 import { parseCookies, destroyCookie } from 'nookies'
 import { prisma } from '../prisma'
 
+type User = {
+  name: string
+  email: string
+  avatar_url: string
+}
+
+type Account = {
+  userId: string
+  type: string
+  provider: string
+  providerAccountId: string
+  refresh_token: string
+  access_token: string
+  expires_at: number
+  token_type: string
+  scope: string
+  id_token: string
+  session_state: string
+}
+
 export function PrismaAdapter(
   req: NextApiRequest | NextPageContext['req'],
   res: NextApiResponse | NextPageContext['res'],
 ): Adapter {
   return {
-    async createUser(user: {
-      name: string ,
-      email: string,
-      avatar_url: string,
-    }) {
+    async createUser(user: User) {
       const { '@scheduling:userId': userIdOnCookies } = parseCookies({ req })
 
       if (!userIdOnCookies) {
@@ -132,7 +148,7 @@ export function PrismaAdapter(
       }
     },
 
-    async linkAccount(account: any) {
+    async linkAccount(account: Account) {
       await prisma.account.create({
         data: {
           user_id: account.userId,
