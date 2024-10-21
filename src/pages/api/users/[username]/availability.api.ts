@@ -1,6 +1,9 @@
 import { prisma } from '@/src/lib/prisma'
 import dayjs from 'dayjs'
 import { NextApiRequest, NextApiResponse } from 'next'
+import utc from 'dayjs/plugin/utc'
+
+dayjs.extend(utc)
 
 export default async function handle(
   req: NextApiRequest,
@@ -11,7 +14,13 @@ export default async function handle(
   }
 
   const username = String(req.query.username)
-  const { date } = req.query
+  const { date, timezoneOffset } = req.query
+
+  if (!date || !timezoneOffset) {
+    return res
+      .status(400)
+      .json({ message: 'Date or timezoneOffset not provided' })
+  }
 
   if (!date) {
     return res.status(400).json({ message: 'Date not provided' })
@@ -30,8 +39,16 @@ export default async function handle(
   const refernceDate = dayjs(String(date))
   const isPastDate = refernceDate.endOf('day').isBefore(new Date())
 
+  const timezoneOffsetInHours =
+    typeof timezoneOffset === 'string'
+      ? Number(timezoneOffset) / 60
+      : Number(timezoneOffset) / 60
+
+  const refernceDateTimezoneOffsetInHours =
+    refernceDate.toDate().getTimezoneOffset() / 60
+
   if (isPastDate) {
-    return res.json({ possibleTimes: [], availabilityTime: [] })
+    return res.json({ possibleTimes: [], availabilityTimes: [] })
   }
 
   const userAvailability = await prisma.userTimeInterval.findFirst({
@@ -42,7 +59,7 @@ export default async function handle(
   })
 
   if (!userAvailability) {
-    return res.json({ possibleTimes: [], availabilityTime: [] })
+    return res.json({ possibleTimes: [], availabilityTimes: [] })
   }
 
   // eslint-disable-next-line camelcase
@@ -66,19 +83,34 @@ export default async function handle(
     where: {
       user_id: user.id,
       date: {
-        gte: refernceDate.set('hour', startHour).toDate(),
-        lte: refernceDate.set('hour', endHour).toDate(),
+        gte: refernceDate
+          .set('hour', startHour)
+          .add(timezoneOffsetInHours, 'hours')
+          .toDate(),
+        lte: refernceDate
+          .set('hour', endHour)
+          .add(timezoneOffsetInHours, 'hours')
+          .toDate(),
       },
     },
   })
 
-  const availabilityTime = possibleTimes.filter((time) => {
-    return !blockedTimes.some(
-      (blockedTimes) => blockedTimes.date.getHours() === time,
+  const availabilityTimes = possibleTimes.filter((time) => {
+    const isTimeBlocked = blockedTimes.some(
+      (blockedTimes) =>
+        blockedTimes.date.getUTCHours() - timezoneOffsetInHours === time,
     )
+
+    const isTimeInPast = refernceDate
+      .set('hour', time)
+      .subtract(refernceDateTimezoneOffsetInHours, 'hours')
+      .isBefore(dayjs().utc().subtract(timezoneOffsetInHours, 'hours'))
+
+    return !isTimeBlocked && !isTimeInPast
   })
+
   return res.json({
     possibleTimes,
-    availabilityTime,
+    availabilityTimes,
   })
 }

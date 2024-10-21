@@ -16,6 +16,7 @@ import { api } from '@/src/lib/axios'
 
 interface BlockedDates {
   blockedWeekDays: number[]
+  blockedDates: number[]
 }
 interface CalendarWeek {
   week: number
@@ -64,10 +65,10 @@ export default function Calendar({
       currentDate.get('month'),
     ],
     queryFn: async () => {
-      const response = await api.get(`/users/${username}/blocked-dates?`, {
+      const response = await api.get(`/users/${username}/blocked-dates`, {
         params: {
           year: currentDate.get('year'),
-          month: currentDate.get('month'),
+          month: String(currentDate.get('month') + 1).padStart(2, '0'),
         },
       })
       return response.data
@@ -116,7 +117,8 @@ export default function Calendar({
           date,
           disabled:
             date.endOf('date').isBefore(new Date()) ||
-            blockedDates.blockedWeekDays.includes(date.get('day')),
+            blockedDates.blockedWeekDays.includes(date.get('day')) ||
+            blockedDates.blockedDates.includes(date.get('date')),
         }
       }),
       ...nextMonthFillArray.map((date) => {

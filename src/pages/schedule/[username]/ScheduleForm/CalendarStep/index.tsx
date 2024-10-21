@@ -14,10 +14,14 @@ import { useQuery } from '@tanstack/react-query'
 
 interface Availability {
   possibleTimes: number[]
-  availabilityTime: number[]
+  availabilityTimes: number[]
 }
 
-export function CalendarStep() {
+interface CalendarStepProps {
+  onSelectDateTime: (date: Date) => void
+}
+
+export function CalendarStep({ onSelectDateTime }: CalendarStepProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   // const [availability, setAvailability] = useState<Availability | null>(null)
 
@@ -42,12 +46,21 @@ export function CalendarStep() {
       const response = await api.get(`/users/${username}/availability`, {
         params: {
           date: selectedDateWithoutTime,
+          timezoneOffset: selectedDate ? selectedDate.getTimezoneOffset() : 0,
         },
       })
       return response.data
     },
     enabled: !!selectedDate,
   })
+
+  function handleSelectTime(hour: number) {
+    const dataWithTime = dayjs(selectedDate)
+      .set('hour', hour)
+      .startOf('hour')
+      .toDate()
+    onSelectDateTime(dataWithTime)
+  }
 
   return (
     <Container isTimePickerOpen={isDateSelected}>
@@ -59,10 +72,13 @@ export function CalendarStep() {
           </TimerPickerHeader>
           <TimerPickerList>
             {availability?.possibleTimes.map((hour) => {
+              console.log(availability)
+
               return (
                 <TimerPickerItem
                   key={hour}
-                  disabled={!availability.availabilityTime.includes(hour)}
+                  onClick={() => handleSelectTime(hour)}
+                  disabled={!availability.availabilityTimes.includes(hour)}
                 >
                   {String(hour).padStart(2, '0')}:00h
                 </TimerPickerItem>
