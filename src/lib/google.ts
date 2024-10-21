@@ -30,11 +30,16 @@ export async function getGoogleOAuthToken(userId: string) {
   if (isTokenExpired) {
     const { credentials } = await auth.refreshAccessToken()
     const {
+      // eslint-disable-next-line camelcase
       access_token,
+      // eslint-disable-next-line camelcase
       expiry_date,
+      // eslint-disable-next-line camelcase
       id_token,
+      // eslint-disable-next-line camelcase
       refresh_token,
       scope,
+      // eslint-disable-next-line camelcase
       token_type,
     } = credentials
 
@@ -43,18 +48,26 @@ export async function getGoogleOAuthToken(userId: string) {
         id: account.id,
       },
       data: {
+        // eslint-disable-next-line camelcase
         access_token,
+        // eslint-disable-next-line camelcase
         expires_at: expiry_date ? Math.floor(expiry_date / 1000) : null,
+        // eslint-disable-next-line camelcase
         id_token,
+        // eslint-disable-next-line camelcase
         refresh_token,
         scope,
+        // eslint-disable-next-line camelcase
         token_type,
       },
     })
 
     auth.setCredentials({
+      // eslint-disable-next-line camelcase
       access_token,
+      // eslint-disable-next-line camelcase
       refresh_token,
+      // eslint-disable-next-line camelcase
       expiry_date,
     })
   }

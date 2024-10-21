@@ -95,6 +95,7 @@ export default function TimeIntervals() {
   })
   const intervals = watch('intervals')
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function handleSetTimeIntervals(data: any) {
     const { intervals } = data as TimeIntervalsFormOutput
 
@@ -146,6 +147,9 @@ export default function TimeIntervals() {
                     </IntervalDay>
                     <IntervalInputs>
                       <TextInput
+                        crossOrigin={undefined}
+                        onPointerEnterCapture={undefined}
+                        onPointerLeaveCapture={undefined}
                         size="sm"
                         type="time"
                         step={60}
@@ -153,6 +157,9 @@ export default function TimeIntervals() {
                         {...register(`intervals.${index}.startTime`)}
                       />
                       <TextInput
+                        crossOrigin={undefined}
+                        onPointerEnterCapture={undefined}
+                        onPointerLeaveCapture={undefined}
                         size="sm"
                         type="time"
                         step={60}
