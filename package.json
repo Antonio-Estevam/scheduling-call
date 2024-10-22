@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "fix": "next lint --fix"
+    "fix": "next lint --fix",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -28,6 +29,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^11.2.1",
     "@rocketseat/eslint-config": "^2.2.2",
     "@types/cookie": "^0.6.0",
     "@types/node": "^20",
@@ -36,9 +38,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.12",
     "prisma": "^5.19.1",
+    "prisma-erd-generator": "^1.11.2",
     "typescript": "^5"
-  },
-  "resolutions": {
-    "react-countup/countup.js": "2.5.0"
   }
 }
